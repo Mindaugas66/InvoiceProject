@@ -1,0 +1,616 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="flex h-screen">
+    {% include 'components/nav_menu.html' %}
+    <div class="flex-1 p-8 bg-gray-50 overflow-y-auto">
+        <!-- Header with Year Selection -->
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-indigo-700">Finansinė apžvalga</h1>
+            <div class="flex items-center space-x-2">
+                <span class="text-gray-600">Metai:</span>
+                <select name="year" class="px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" onchange="location = '?year=' + this.value;">
+                    {% for y in years %}
+                        <option value="{{ y }}" {% if y == year %}selected{% endif %}>{{ y }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        
+        <!-- Key Metrics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Total Invoices -->
+            <div class="bg-white rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg border-l-4 border-indigo-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500 font-medium">Bendra suma</p>
+                        <p class="text-2xl font-bold text-gray-800">€{{ gross_income|floatformat:2 }}</p>
+                    </div>
+                    <div class="p-3 rounded-full bg-indigo-100">
+                        <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <span class="text-sm text-green-600 font-medium flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                        </svg>
+                        {{ gross_income_growth|default:"0" }}% daugiau nei pernai
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Net Income -->
+            <div class="bg-white rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg border-l-4 border-green-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500 font-medium">Grynasis pelnas</p>
+                        <p class="text-2xl font-bold text-gray-800">€{{ net_income|floatformat:2 }}</p>
+                    </div>
+                    <div class="p-3 rounded-full bg-green-100">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <span class="text-sm text-green-600 font-medium flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                        </svg>
+                        {{ net_income_growth|default:"0" }}% daugiau nei pernai
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Gross Income -->
+            <div class="bg-white rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg border-l-4 border-purple-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500 font-medium">Pajamos prieš mokesčius</p>
+                        <p class="text-2xl font-bold text-gray-800">€{{ gross_income|floatformat:2 }}</p>
+                    </div>
+                    <div class="p-3 rounded-full bg-purple-100">
+                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <span class="text-sm text-green-600 font-medium flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                        </svg>
+                        {{ gross_income_growth|default:"0" }}% daugiau nei pernai
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Taxes -->
+            <div class="bg-white rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg border-l-4 border-red-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500 font-medium">Mokesčiai (viso)</p>
+                        <p class="text-2xl font-bold text-gray-800">€{{ taxes.total|floatformat:2 }}</p>
+                    </div>
+                    <div class="p-3 rounded-full bg-red-100">
+                        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <span class="text-sm text-red-600 font-medium flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                        </svg>
+                        {{ taxes_percent|default:"0" }}% nuo pajamų
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Monthly Breakdown Chart -->
+            <div class="bg-white rounded-xl shadow-md p-6 lg:col-span-2">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">Metinė apžvalga pagal mėnesius</h2>
+                <div id="monthlyChart" class="w-full" style="height: 300px;"></div>
+            </div>
+            
+            <!-- Invoices Count & Tax Breakdown -->
+            <div class="space-y-6">
+                <!-- Invoices Count -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Sąskaitų statistika</h2>
+                    <div id="invoiceStatsChart" style="height: 200px;"></div>
+                    <div class="mt-4 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full bg-indigo-600 mr-2"></div>
+                                <span class="text-sm text-gray-600">Viso</span>
+                            </div>
+                            <span class="font-medium">{{ invoice_stats.total }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
+                                <span class="text-sm text-gray-600">Apmokėta</span>
+                            </div>
+                            <span class="font-medium">{{ invoice_stats.paid }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
+                                <span class="text-sm text-gray-600">Laukiančios</span>
+                            </div>
+                            <span class="font-medium">{{ invoice_stats.unpaid }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tax Breakdown Chart -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Mokesčių pasiskirstymas</h2>
+                    <div id="taxBreakdownChart" style="height: 200px;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tax Calculator -->
+        <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                </svg>
+                Mokesčių skaičiuoklė
+            </h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Input Section -->
+                <div class="space-y-4">
+                    <div>
+                        <label for="taxIncome" class="block text-sm font-medium text-gray-700 mb-2">
+                            Pajamos (€)
+                        </label>
+                        <input type="number" id="taxIncome" step="0.01" min="0" value="{{ gross_income|default:'0' }}" 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    
+                    <div class="flex items-center space-x-3 bg-white p-4 rounded-lg border border-gray-200">
+                        <input type="checkbox" id="use30Percent" checked 
+                               class="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                        <label for="use30Percent" class="text-sm font-medium text-gray-700 cursor-pointer">
+                            Naudoti 30% išlaidų taisyklę
+                        </label>
+                    </div>
+                    
+                    <div id="expensesField" class="hidden">
+                        <label for="taxExpenses" class="block text-sm font-medium text-gray-700 mb-2">
+                            Faktinės išlaidos (€)
+                        </label>
+                        <input type="number" id="taxExpenses" step="0.01" min="0" value="0"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4" id="vsdiExemptNotice" style="display: none;">
+                        <div class="flex">
+                            <svg class="w-5 h-5 text-yellow-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"/>
+                            </svg>
+                            <p class="text-sm text-yellow-800">
+                                <strong>Pirmi 12 mėnesių:</strong> VSDI lengvata taikoma
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4" id="psdSelfPaidNotice" style="display: none;">
+                        <div class="flex">
+                            <svg class="w-5 h-5 text-blue-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"/>
+                            </svg>
+                            <p class="text-sm text-blue-800" id="psdSelfPaidText">
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4" id="mmaNotice" style="display: none;">
+                        <div class="flex">
+                            <svg class="w-5 h-5 text-green-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
+                            </svg>
+                            <p class="text-sm text-green-800">
+                                <strong>MMA 2025:</strong> €1,038/mėn (€12,456/metus) | <strong>Min. PSD:</strong> €72.45/mėn (€869.40/metus)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Results Section -->
+                <div class="bg-white rounded-lg p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Rezultatai</h3>
+                    
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="text-sm text-gray-600">Išlaidos:</span>
+                            <span class="font-medium text-gray-900">€<span id="resultExpenses">0.00</span></span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="text-sm text-gray-600">Pelnas:</span>
+                            <span class="font-medium text-gray-900">€<span id="resultProfit">0.00</span></span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="text-sm text-gray-600">VSDI (12.52%):</span>
+                            <span class="font-medium text-purple-600">€<span id="resultVSDI">0.00</span></span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <div class="flex flex-col">
+                                <span class="text-sm text-gray-600">PSDI (6.98%):</span>
+                                <span class="text-xs text-gray-500" id="psdiNote"></span>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-medium text-blue-600">€<span id="resultPSDI">0.00</span></div>
+                                <div class="text-xs text-gray-500">per metus</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="text-sm text-gray-600">GPM (5%, iki €11,900):</span>
+                            <span class="font-medium text-pink-600">€<span id="resultGPM">0.00</span></span>
+                        </div>
+                        <div class="flex justify-between items-center py-3 bg-orange-50 rounded-lg px-3 mt-2">
+                            <span class="font-semibold text-gray-800">Viso mokesčių:</span>
+                            <span class="text-lg font-bold text-orange-600">€<span id="resultTotalTax">0.00</span></span>
+                        </div>
+                        <div class="flex justify-between items-center py-3 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg px-3 mt-2">
+                            <span class="font-semibold text-gray-800">Grynasis pelnas:</span>
+                            <span class="text-xl font-bold text-indigo-700">€<span id="resultNet">0.00</span></span>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-2">
+                            Bendras mokesčių tarifas: <span id="resultTaxRate" class="font-medium">0.00</span>%
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tax Information -->
+        <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <h2 class="text-lg font-semibold text-gray-800 mb-6">Mokesčių informacija</h2>
+            
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead>
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mokesčio tipas</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tarifas</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Apmokestinama suma</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mokėtina suma</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Terminas</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="font-medium text-gray-900">GPM (Gyventojų pajamų mokestis)</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ taxes.gpm_percent|floatformat:2 }}%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">€{{ gross_income|floatformat:2 }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">€{{ taxes.gpm|floatformat:2 }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ gpm_due_date|default:"-" }}</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="font-medium text-gray-900">VSD (Valstybinis socialinis draudimas)</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ taxes.vsd_percent|floatformat:2 }}%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">€{{ gross_income|floatformat:2 }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">€{{ taxes.vsd|floatformat:2 }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ vsd_due_date|default:"-" }}</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="font-medium text-gray-900">PSD (Privalomasis sveikatos draudimas)</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ taxes.psd_percent|floatformat:2 }}%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">€{{ gross_income|floatformat:2 }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">€{{ taxes.psd|floatformat:2 }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ psd_due_date|default:"-" }}</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Viso</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ taxes.total_percent|floatformat:2 }}%</td>
+                            <td class="px-6 py-4 whitespace-nowrap"></td>
+                            <td class="px-6 py-4 whitespace-nowrap font-bold">€{{ taxes.total|floatformat:2 }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ApexCharts Library -->
+<script src="{% static 'js/apexcharts.min.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Monthly Income and Taxes Chart
+        var monthlyData = {{ monthly_data|safe }};
+        
+        var monthlyOptions = {
+            series: [{
+                name: 'Pajamos',
+                data: monthlyData.map(d => d.income)
+            }, {
+                name: 'Grynasis pelnas',
+                data: monthlyData.map(d => d.net)
+            }, {
+                name: 'Mokesčiai',
+                data: monthlyData.map(d => d.taxes)
+            }],
+            chart: {
+                type: 'bar',
+                height: 300,
+                toolbar: {
+                    show: false
+                },
+                fontFamily: 'inherit'
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '70%',
+                    borderRadius: 6
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            colors: ['#6366f1', '#ef4444', '#22c55e'],
+            xaxis: {
+                categories: monthlyData.map(d => d.month),
+                labels: {
+                    style: {
+                        colors: '#6b7280',
+                        fontSize: '12px'
+                    }
+                }
+            },
+            yaxis: {
+                labels: {
+                    style: {
+                        colors: '#6b7280',
+                        fontSize: '12px'
+                    },
+                    formatter: function(value) {
+                        return '€' + value.toFixed(0);
+                    }
+                }
+            },
+            legend: {
+                position: 'top',
+                horizontalAlign: 'left',
+                fontSize: '12px',
+                markers: {
+                    width: 10,
+                    height: 10,
+                    radius: 10
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: function(value) {
+                        return '€' + value.toFixed(2);
+                    }
+                }
+            },
+            grid: {
+                borderColor: '#f3f4f6',
+                strokeDashArray: 4
+            }
+        };
+        
+        var monthlyChart = new ApexCharts(document.querySelector("#monthlyChart"), monthlyOptions);
+        monthlyChart.render();
+
+        // Invoice Stats Doughnut Chart
+        var invoiceStatsOptions = {
+            series: [{{ invoice_stats.paid|default:0 }}, {{ invoice_stats.unpaid|default:0 }}],
+            chart: {
+                type: 'donut',
+                height: 200,
+                fontFamily: 'inherit'
+            },
+            labels: ['Apmokėta', 'Laukiančios'],
+            colors: ['#22c55e', '#eab308'],
+            legend: {
+                show: false
+            },
+            dataLabels: {
+                enabled: false
+            },
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: '70%',
+                        labels: {
+                            show: true,
+                            total: {
+                                show: true,
+                                label: 'Viso',
+                                fontSize: '14px',
+                                fontWeight: 600,
+                                color: '#374151',
+                                formatter: function(w) {
+                                    return w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: function(value, { seriesIndex, w }) {
+                        var total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                        var percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                        return value + ' (' + percentage + '%)';
+                    }
+                }
+            }
+        };
+        
+        var invoiceStatsChart = new ApexCharts(document.querySelector("#invoiceStatsChart"), invoiceStatsOptions);
+        invoiceStatsChart.render();
+
+        // Tax Breakdown Pie Chart
+        var taxBreakdownOptions = {
+            series: [
+                {{ taxes.gpm|default:0 }},
+                {{ taxes.vsd|default:0 }},
+                {{ taxes.psd|default:0 }}
+            ],
+            chart: {
+                type: 'pie',
+                height: 200,
+                fontFamily: 'inherit'
+            },
+            labels: ['GPM', 'VSD', 'PSD'],
+            colors: ['#a855f7', '#3b82f6', '#ec4899'],
+            legend: {
+                position: 'bottom',
+                fontSize: '11px',
+                markers: {
+                    width: 8,
+                    height: 8,
+                    radius: 8
+                }
+            },
+            dataLabels: {
+                enabled: true,
+                formatter: function(val) {
+                    return val.toFixed(1) + '%';
+                },
+                style: {
+                    fontSize: '11px',
+                    fontWeight: 600,
+                    colors: ['#fff']
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: function(value) {
+                        return '€' + value.toFixed(2);
+                    }
+                }
+            }
+        };
+        
+        var taxBreakdownChart = new ApexCharts(document.querySelector("#taxBreakdownChart"), taxBreakdownOptions);
+        taxBreakdownChart.render();
+    });
+</script>
+
+<!-- Tax Calculator Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const incomeInput = document.getElementById('taxIncome');
+        const expensesInput = document.getElementById('taxExpenses');
+        const use30PercentCheckbox = document.getElementById('use30Percent');
+        const expensesField = document.getElementById('expensesField');
+        const vsdiExemptNotice = document.getElementById('vsdiExemptNotice');
+        const psdSelfPaidNotice = document.getElementById('psdSelfPaidNotice');
+        const psdSelfPaidText = document.getElementById('psdSelfPaidText');
+        const mmaNotice = document.getElementById('mmaNotice');
+        const psdiNote = document.getElementById('psdiNote');
+        
+        // Toggle expenses field
+        use30PercentCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                expensesField.classList.add('hidden');
+            } else {
+                expensesField.classList.remove('hidden');
+            }
+            calculateTaxes();
+        });
+        
+        // Calculate on input change
+        incomeInput.addEventListener('input', calculateTaxes);
+        expensesInput.addEventListener('input', calculateTaxes);
+        
+        // Show MMA notice on load
+        mmaNotice.style.display = 'block';
+        
+        // Initial calculation
+        calculateTaxes();
+        
+        function calculateTaxes() {
+            const income = parseFloat(incomeInput.value) || 0;
+            const use30Percent = use30PercentCheckbox.checked;
+            const expenses = use30Percent ? 0 : (parseFloat(expensesInput.value) || 0);
+            const year = {{ year }};  // Get current year for monthly breakdown
+            
+            // Send AJAX request (PSD is always self-paid as global rule)
+            fetch('{% url "calculate_taxes" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: `income=${income}&use_30_percent=${use30Percent}&expenses=${expenses}&year=${year}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Update results
+                document.getElementById('resultExpenses').textContent = data.expenses.toFixed(2);
+                document.getElementById('resultProfit').textContent = data.profit.toFixed(2);
+                document.getElementById('resultVSDI').textContent = data.vsdi.toFixed(2);
+                document.getElementById('resultPSDI').textContent = data.psdi.toFixed(2);
+                document.getElementById('resultGPM').textContent = data.gpm.toFixed(2);
+                document.getElementById('resultTotalTax').textContent = data.total_taxes.toFixed(2);
+                document.getElementById('resultNet').textContent = data.net_income.toFixed(2);
+                document.getElementById('resultTaxRate').textContent = data.total_percent.toFixed(2);
+                
+                // Update PSDI note
+                psdiNote.textContent = data.psdi_note || '';
+                
+                // Show/hide VSDI exemption notice
+                if (data.vsdi_exempt) {
+                    vsdiExemptNotice.style.display = 'block';
+                } else {
+                    vsdiExemptNotice.style.display = 'none';
+                }
+                
+                // Always show PSD self-paid notice (global rule)
+                psdSelfPaidNotice.style.display = 'block';
+                
+                // Display monthly breakdown if available
+                if (data.psdi_monthly_breakdown) {
+                    // Show detailed monthly breakdown
+                    const totalMonths = data.psdi_monthly_breakdown.length;
+                    const avgMonthlyPSD = data.psdi / 12;
+                    psdSelfPaidText.innerHTML = '<strong>PSD savaimokestis:</strong> €' + data.psdi.toFixed(2) + '/metus (skaičiuojama kiekvieną mėnesį pagal faktines pajamas)';
+                } else {
+                    // Show standard message
+                    const monthlyIncome = income / 12;
+                    const monthlyPSD = data.psdi / 12;
+                    
+                    if (data.income_vs_mma === 'below') {
+                        psdSelfPaidText.innerHTML = '<strong>PSD savaimokestis:</strong> €' + data.min_psd_monthly.toFixed(2) + '/mėn × 12 = €' + (data.min_psd_monthly * 12).toFixed(2) + '/metus (vid. pajamos ' + monthlyIncome.toFixed(2) + '€/mėn ≤ MMA)';
+                    } else {
+                        psdSelfPaidText.innerHTML = '<strong>PSD savaimokestis:</strong> €' + monthlyPSD.toFixed(2) + '/mėn × 12 = €' + data.psdi.toFixed(2) + '/metus (vid. pajamos ' + monthlyIncome.toFixed(2) + '€/mėn > MMA)';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Tax calculation error:', error);
+            });
+        }
+    });
+</script>
+{% endblock %}

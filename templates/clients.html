@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="flex">
+    {% include 'components/nav_menu.html' %}
+    <div class="flex-1 p-8 bg-gray-50">
+        <h1 class="text-3xl font-bold text-indigo-700 mb-8 border-b pb-4">Klientai</h1>
+        
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- Client List - Now on the left -->
+            <div class="bg-white rounded-xl shadow-lg p-8 transition-all duration-300 hover:shadow-xl lg:w-1/2">
+                <h2 class="text-xl font-semibold text-gray-800 mb-6">Klientų sąrašas</h2>
+                
+                {% if clients %}
+                    <div class="overflow-x-auto rounded-lg border border-gray-200">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Įmonė
+                                    </th>
+                                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Kontaktinis asmuo
+                                    </th>
+                                    <th scope="col" class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Veiksmai
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                {% for client in clients %}
+                                <tr class="hover:bg-gray-50 transition-colors duration-200">
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900">{{ client.company_name }}</div>
+                                        <div class="text-xs text-gray-500">{{ client.company_code }}</div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">{{ client.first_name }} {{ client.last_name }}</div>
+                                        <div class="text-xs text-gray-500">{{ client.phone }}</div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
+                                        <a href="#" class="text-indigo-600 hover:text-indigo-900 mr-3">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
+                                        </a>
+                                        <a href="#" class="text-red-600 hover:text-red-900">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-8 text-gray-500">
+                        <p>Nėra klientų.</p>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- New Client Form - Now on the right -->
+            <div class="bg-white rounded-xl shadow-lg p-8 transition-all duration-300 hover:shadow-xl lg:w-1/2">
+                <h2 class="text-xl font-semibold text-gray-800 mb-6">Naujas klientas</h2>
+                <form method="post" class="space-y-6">
+                    {% csrf_token %}
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Company Name -->
+                        <div>
+                            <label for="{{ form.company_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Įmonės pavadinimas</label>
+                            <input type="text" name="{{ form.company_name.name }}" id="{{ form.company_name.id_for_label }}" 
+                                   value="{{ form.company_name.value|default:'' }}" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            {% if form.company_name.errors %}
+                                <p class="text-red-500 text-xs mt-1">{{ form.company_name.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Company Code -->
+                        <div>
+                            <label for="{{ form.company_code.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Įmonės kodas</label>
+                            <input type="text" name="{{ form.company_code.name }}" id="{{ form.company_code.id_for_label }}" 
+                                   value="{{ form.company_code.value|default:'' }}" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            {% if form.company_code.errors %}
+                                <p class="text-red-500 text-xs mt-1">{{ form.company_code.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- PVM Code -->
+                        <div>
+                            <label for="{{ form.pvm_code.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">PVM kodas</label>
+                            <input type="text" name="{{ form.pvm_code.name }}" id="{{ form.pvm_code.id_for_label }}" 
+                                   value="{{ form.pvm_code.value|default:'' }}" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            {% if form.pvm_code.errors %}
+                                <p class="text-red-500 text-xs mt-1">{{ form.pvm_code.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- First Name -->
+                        <div>
+                            <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Vardas</label>
+                            <input type="text" name="{{ form.first_name.name }}" id="{{ form.first_name.id_for_label }}" 
+                                   value="{{ form.first_name.value|default:'' }}" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            {% if form.first_name.errors %}
+                                <p class="text-red-500 text-xs mt-1">{{ form.first_name.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Last Name -->
+                        <div>
+                            <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Pavardė</label>
+                            <input type="text" name="{{ form.last_name.name }}" id="{{ form.last_name.id_for_label }}" 
+                                   value="{{ form.last_name.value|default:'' }}" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            {% if form.last_name.errors %}
+                                <p class="text-red-500 text-xs mt-1">{{ form.last_name.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Phone -->
+                        <div>
+                            <label for="{{ form.phone.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Telefono numeris</label>
+                            <input type="text" name="{{ form.phone.name }}" id="{{ form.phone.id_for_label }}" 
+                                   value="{{ form.phone.value|default:'' }}" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            {% if form.phone.errors %}
+                                <p class="text-red-500 text-xs mt-1">{{ form.phone.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Address (full width) -->
+                    <div>
+                        <label for="{{ form.address.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Adresas</label>
+                        <input type="text" name="{{ form.address.name }}" id="{{ form.address.id_for_label }}" 
+                               value="{{ form.address.value|default:'' }}" 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        {% if form.address.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.address.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="flex justify-end mt-8">
+                        <button type="submit" class="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-lg shadow-md hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300">
+                            Išsaugoti
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

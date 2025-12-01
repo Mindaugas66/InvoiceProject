@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="flex">
+    {% include 'components/nav_menu.html' %}
+    <div class="flex-1 p-8 bg-gray-50">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">Vartotojo sąskaitos</h1>
+                {% if selected_user_obj %}
+                {% endif %}
+            </div>
+            <button onclick="document.getElementById('uploadModal').classList.remove('hidden')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md flex items-center transition-colors">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                </svg>
+                Įkelti sąskaitą
+            </button>
+        </div>
+
+        {% if invoices %}
+            <!-- Invoice cards grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+                {% for invoice in invoices %}
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300">
+                    <div class="border-b border-gray-100 px-4 py-3 flex justify-between items-center">
+                        <span class="font-medium text-gray-700">{{ invoice.invoice_number }}</span>
+                        <span class="text-sm bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full">{{ invoice.date|date:"Y-m-d" }}</span>
+                    </div>
+                    <div class="p-4">
+                        <div class="mb-4">
+                            <p class="text-sm text-gray-500">Klientas</p>
+                            <p class="font-medium">{{ invoice.client }}</p>
+                        </div>
+                        <div class="flex justify-between mb-4">
+                            <div>
+                                <p class="text-sm text-gray-500">Apmokėti iki</p>
+                                <p>{{ invoice.pay_until|date:"Y-m-d" }}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm text-gray-500">Suma</p>
+                                <p class="font-bold text-lg text-indigo-700">{{ invoice.total_amount }} €</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-center pt-3 border-t border-gray-100">
+                            <a href="{% url 'invoice_preview' invoice.id %}" class="bg-gradient-to-r from-indigo-700 to-purple-700 text-white text-sm py-1.5 px-4 rounded-md flex items-center justify-center transition-colors shadow-sm hover:shadow-md">
+                                <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                Peržiūrėti
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- Empty state -->
+            <div class="bg-white rounded-lg shadow-sm p-8 text-center">
+                <h2 class="text-xl font-semibold text-gray-800 mb-2">Nėra sąskaitų</h2>
+                <p class="text-gray-600 mb-6 max-w-md mx-auto">Šiam vartotojui dar nėra sukurtų sąskaitų.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Upload Invoice Modal -->
+<div id="uploadModal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+    <!-- Backdrop -->
+    <div class="fixed inset-0 bg-gray-900 bg-opacity-30 backdrop-blur-sm transition-opacity" onclick="document.getElementById('uploadModal').classList.add('hidden')"></div>
+    
+    <!-- Modal Content -->
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="relative bg-white rounded-lg shadow-xl w-full max-w-md p-8">
+            <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-semibold text-gray-800">Įkelti sąskaitą</h3>
+            <button onclick="document.getElementById('uploadModal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        
+        <form method="POST" action="{% url 'upload_invoice' %}" class="space-y-4">
+            {% csrf_token %}
+            
+            <!-- Client Selection -->
+            <div>
+                <label for="client" class="block text-sm font-medium text-gray-700 mb-1">Klientas</label>
+                <select name="client" id="client" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                    <option value="">Pasirinkite klientą</option>
+                    {% for client in clients %}
+                    <option value="{{ client.id }}">{{ client.company_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <!-- Invoice Number -->
+            <div>
+                <label for="invoice_number" class="block text-sm font-medium text-gray-700 mb-1">Sąskaitos numeris</label>
+                <input type="text" name="invoice_number" id="invoice_number" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="pvz. INV-2024-001">
+            </div>
+            
+            <!-- Month -->
+            <div>
+                <label for="month" class="block text-sm font-medium text-gray-700 mb-1">Mėnuo</label>
+                <input type="month" name="month" id="month" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+            
+            <!-- Total Amount -->
+            <div>
+                <label for="total_amount" class="block text-sm font-medium text-gray-700 mb-1">Bendra suma (€)</label>
+                <input type="number" step="0.01" name="total_amount" id="total_amount" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="0.00">
+            </div>
+            
+            <!-- Buttons -->
+            <div class="flex space-x-3 pt-4">
+                <button type="button" onclick="document.getElementById('uploadModal').classList.add('hidden')" class="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 font-medium">
+                    Atšaukti
+                </button>
+                <button type="submit" class="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 font-medium">
+                    Įkelti
+                </button>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

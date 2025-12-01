@@ -1,0 +1,78 @@
+<div class="w-64 bg-gradient-to-b from-indigo-900 to-purple-800 text-white h-screen shadow-xl flex flex-col">
+    <!-- App Logo/Title -->
+    <div class="p-5 border-b border-indigo-700">
+        <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 to-indigo-300">
+            Money Money
+        </h1>
+    </div>
+
+    <!-- Current User Card -->
+    <div class="p-4 border-b border-indigo-700">
+        <div class="bg-indigo-800 bg-opacity-50 rounded-lg p-4 flex items-center space-x-3">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center flex-shrink-0">
+                <span class="text-white font-bold text-lg">{{ request.user.username|slice:":2"|upper }}</span>
+            </div>
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold text-white truncate">{{ request.user.username }}</p>
+                <p class="text-xs text-indigo-300 truncate">{{ request.user.email|default:"Vartotojas" }}</p>
+            </div>
+            <a href="{% url 'logout' %}" class="flex-shrink-0 p-2 hover:bg-red-600 rounded-lg transition-colors" title="Atsijungti">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <!-- Navigation Links -->
+    <nav class="flex-1 px-4 py-6 overflow-y-auto">
+        <div class="space-y-3">
+            <a href="{% url 'overview' %}" class="flex items-center px-4 py-3 rounded-lg {% if active_page == 'overview' %}bg-indigo-700 bg-opacity-40{% else %}hover:bg-indigo-700 hover:bg-opacity-40{% endif %} transition-all duration-200 transform hover:translate-x-1">
+                <svg class="w-5 h-5 mr-3 text-cyan-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                </svg>
+                <span>Apžvalga</span>
+            </a>
+
+            <a href="{% url 'new_invoice' %}" class="flex items-center px-4 py-3 rounded-lg {% if active_page == 'new_invoice' %}bg-indigo-700 bg-opacity-40{% else %}hover:bg-indigo-700 hover:bg-opacity-40{% endif %} transition-all duration-200 transform hover:translate-x-1">
+                <svg class="w-5 h-5 mr-3 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                <span>Nauja sąskaita</span>
+            </a>
+
+            <a href="{% url 'user_invoices' %}" class="flex items-center px-4 py-3 rounded-lg {% if active_page == 'all_invoices' %}bg-indigo-700 bg-opacity-40{% else %}hover:bg-indigo-700 hover:bg-opacity-40{% endif %} transition-all duration-200 transform hover:translate-x-1">
+                <svg class="w-5 h-5 mr-3 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span>Visos sąskaitos</span>
+            </a>
+
+            <a href="{% url 'clients' %}" class="flex items-center px-4 py-3 rounded-lg {% if active_page == 'clients' %}bg-indigo-700 bg-opacity-40{% else %}hover:bg-indigo-700 hover:bg-opacity-40{% endif %} transition-all duration-200 transform hover:translate-x-1">
+                <svg class="w-5 h-5 mr-3 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                <span>Klientai</span>
+            </a>
+
+            <a href="{% url 'my_info' %}" class="flex items-center px-4 py-3 rounded-lg {% if active_page == 'my_info' %}bg-indigo-700 bg-opacity-40{% else %}hover:bg-indigo-700 hover:bg-opacity-40{% endif %} transition-all duration-200 transform hover:translate-x-1">
+                <svg class="w-5 h-5 mr-3 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+                <span>Mano info</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Admin Link (at bottom of sidebar) -->
+    <div class="px-4 py-4 border-t border-indigo-700">
+        <a href="/admin/" target="_blank" rel="noopener noreferrer" class="flex items-center px-4 py-3 rounded-lg hover:bg-indigo-700 hover:bg-opacity-40 transition-all duration-200 transform hover:translate-x-1">
+            <svg class="w-5 h-5 mr-3 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            <span>Administravimas</span>
+        </a>
+    </div>
+</div>
